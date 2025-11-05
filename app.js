@@ -1,290 +1,145 @@
-// --- CONFIGURAÇÃO OBRIGATÓRIA (CHAVES SUPABASE) ---
-const SUPABASE_URL = 'https://khyjbzjycgqhthtcszwn.supabase.co'; 
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtoeWpiemp5Y2dxaHRodGNzenduIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIyMTMzMDMsImV4cCI6MjA3Nzc4OTMwM30.VAGIBs1bx1cLx0D3rnnSoNDLcIFgolmGTriy5WPn_GM'; 
+// --- CONFIGURAÇÃO OBRIGATÓRIA ---
+// 1. Vá ao seu projeto Supabase
+// 2. No menu, clique em "Project Settings" (ícone da engrenagem)
+// 3. Clique em "API"
+// 4. Copie o "Project URL" e a "Project API Key" (a chave 'anon public') para aqui:
 
-// --- NOVAS CONFIGURAÇÕES ---
+const SUPABASE_URL = 'https://khyjbzjycgqhthtcszwn.supabase.co'; // Cole a URL aqui
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtoeWpiemp5Y2dxaHRodGNzenduIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIyMTMzMDMsImV4cCI6MjA3Nzc4OTMwM30.VAGIBs1bx1cLx0D3rnnSoNDLcIFgolmGTriy5WPn_GM'; // Cole a Chave aqui
 
-// ⚠️ ATENÇÃO: SUBSTITUA ESTES 3 URLS PELOS SEUS URLS REAIS DO SUPABASE STORAGE!
-const BACKGROUND_IMAGES = [
-    "https://khyjbzjycgqhthtcszwn.supabase.co/storage/v1/object/public/capas/public%20(29).jpg", 
-    "https://khyjbzjycgqhthtcszwn.supabase.co/storage/v1/object/public/capas/public%20(28).jpg", 
-    "https://khyjbzjycgqhthtcszwn.supabase.co/storage/v1/object/public/capas/public%20(30).jpg"
-];
-// Tempo de Amostra (em milissegundos). 30000ms = 30 segundos
-const PREVIEW_DURATION = 30000; 
+// --- FIM DA CONFIGURAÇÃO ---
 
-// Perguntas Frequentes (FAQs)
-const FAQS = [
-    { question: "O beat no site é a versão completa?", answer: "Não. O beat de pré-visualização no site é uma amostra (preview) com duração limitada para fins de demonstração (30 segundos). A versão completa (sem tags e com alta qualidade) é obtida após a compra no Gumroad." },
-    { question: "Quais são os direitos de uso incluídos na compra?", answer: "A compra inclui a licença padrão (Leasing Rights), que permite o uso em músicas, vídeos e performances. Para uso exclusivo ou ilimitado, entre em contacto connosco para discutirmos a licença exclusiva." },
-    { question: "Posso usar a minha própria voz na música?", answer: "Sim, claro! Os beats são instrumentais prontos para você gravar as suas vozes por cima. A licença permite o uso vocal." },
-    { question: "Como recebo os ficheiros após a compra?", answer: "Assim que o pagamento for processado pelo Gumroad, você receberá um link de download imediato para os ficheiros em alta qualidade (geralmente WAV e MP3 Tagless)." }
-];
-
-// --- INICIALIZAÇÃO DO SUPABASE ---
+// Inicializar o cliente Supabase
 const { createClient } = supabase;
-const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
+const db = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// --- ESTADO GLOBAL DO ÁUDIO ---
-let currentSound = null;
-let currentBeatId = null;
-let currentButton = null;
-let previewTimer = null;
+// Selecionar os locais no HTML onde vamos inserir os beats
+const lojaGrid = document.getElementById('loja-grid');
+const destaquesGrid = document.getElementById('destaques-grid');
+const categoriaSelect = document.getElementById('categoria-select');
 
+// Variável para guardar todos os beats quando carregarmos a página
+let todosOsBeats = [];
 
-// ====================================================================
-// 1. FUNÇÕES DO BACKGROUND DINÂMICO
-// ====================================================================
+// Função principal que carrega os beats da base de dados
+async function carregarBeats() {
+    // 1. Ir à tabela 'beats' e buscar todos os dados
+    const { data: beats, error } = await db
+        .from('beats')
+        .select('*')
+        .order('created_at', { ascending: false }); // Ordenar pelos mais recentes
 
-let currentImageIndex = 0;
-const backgroundElement = document.getElementById('dynamic-background');
-
-function rotateBackgrounds() {
-    if (BACKGROUND_IMAGES.length === 0) return;
-
-    // Atualiza a imagem de fundo
-    backgroundElement.style.backgroundImage = `url('${BACKGROUND_IMAGES[currentImageIndex]}')`;
-    
-    // Avança para a próxima imagem (loop)
-    currentImageIndex = (currentImageIndex + 1) % BACKGROUND_IMAGES.length;
-
-    // Define a próxima rotação após 10 segundos
-    setTimeout(rotateBackgrounds, 10000); 
-}
-
-// ====================================================================
-// 2. FUNÇÕES DO PLAYER DE ÁUDIO (AGORA COM LIMITE DE TEMPO)
-// ====================================================================
-
-// Para a música atual e reinicia o botão
-function stopCurrentSound() {
-    if (currentSound) {
-        currentSound.stop();
-        currentSound.unload();
-    }
-    if (currentButton) {
-        currentButton.innerHTML = '<i class="fas fa-play"></i>';
-        currentButton.classList.remove('playing');
-        currentButton = null;
-    }
-    if (previewTimer) {
-        clearTimeout(previewTimer);
-        previewTimer = null;
-    }
-    currentSound = null;
-    currentBeatId = null;
-}
-
-// Inicia a pré-visualização do beat
-function playBeat(beatId, url, button) {
-    // Se o mesmo beat estiver a tocar, pará-lo
-    if (currentBeatId === beatId) {
-        stopCurrentSound();
+    if (error) {
+        console.error('Erro ao buscar beats:', error);
+        lojaGrid.innerHTML = "<p>Não foi possível carregar os beats. Tente mais tarde.</p>";
         return;
     }
-
-    // Se houver outro a tocar, pará-lo primeiro
-    if (currentSound) {
-        stopCurrentSound();
-    }
-
-    currentButton = button;
-    currentBeatId = beatId;
-
-    // Inicializa Howler
-    currentSound = new Howl({
-        src: [url],
-        html5: true, // Obrigatório para ficheiros MP3 grandes
-        onplay: () => {
-            currentButton.innerHTML = '<i class="fas fa-pause"></i>';
-            currentButton.classList.add('playing');
-            
-            // Define o timer para parar a reprodução após o tempo de amostra
-            previewTimer = setTimeout(() => {
-                stopCurrentSound();
-            }, PREVIEW_DURATION);
-        },
-        onend: stopCurrentSound, // Para a reprodução se chegar ao fim
-        onpause: stopCurrentSound,
-        onstop: stopCurrentSound,
-        onloaderror: (id, error) => {
-            console.error('Erro ao carregar áudio:', error);
-            stopCurrentSound();
-        }
-    });
-
-    currentSound.play();
-}
-
-
-// ====================================================================
-// 3. FUNÇÕES DE RENDERIZAÇÃO E FILTRAGEM
-// ====================================================================
-
-// Renderiza a lista de beats
-function renderBeats(beats) {
-    const container = document.getElementById('beats-container');
-    container.innerHTML = ''; 
 
     if (beats.length === 0) {
-        container.innerHTML = '<p class="no-results-message">Nenhum beat encontrado com estes critérios.</p>';
+        lojaGrid.innerHTML = "<p>Ainda não há beats na loja.</p>";
         return;
     }
 
+    // Guardar os beats na nossa variável global
+    todosOsBeats = beats;
+    
+    // Processar e mostrar os beats
+    mostrarBeats(todosOsBeats);
+    carregarCategorias(todosOsBeats);
+}
+
+// Função para mostrar os beats no site
+function mostrarBeats(beats) {
+    // Limpar os grids antes de adicionar novos beats
+    lojaGrid.innerHTML = '';
+    destaquesGrid.innerHTML = '';
+
     beats.forEach(beat => {
-        const isFree = beat.is_free;
-        const link = isFree ? beat.free_download_url : beat.gumroad_link;
-        const buttonText = isFree ? 'Download Grátis' : 'Comprar Agora';
+        // --- A LÓGICA DE PAGAMENTO QUE VOCÊ PEDIU ---
+        let acaoBotao;
+        
+        if (beat.is_free) {
+            // Se 'is_free' for TRUE (grátis)
+            acaoBotao = `
+                <a href="${beat.free_download_url}" class="btn-download" download>
+                    Download Grátis
+                </a>
+            `;
+        } else {
+            // Se 'is_free' for FALSE (pago)
+            // Certifica-se que o preço está formatado (ex: 15.00)
+            const precoFormatado = beat.preco ? parseFloat(beat.preco).toFixed(2) : '0.00';
+            acaoBotao = `
+                <a href="${beat.gumroad_link}" class="btn-comprar" target="_blank">
+                    Comprar (${precoFormatado}€)
+                </a>
+            `;
+        }
+        // --- FIM DA LÓGICA ---
 
-        const beatCard = document.createElement('div');
-        beatCard.className = 'beat-card';
-
-        beatCard.innerHTML = `
-            <img src="${beat.imagem_url || 'https://placehold.co/600x600/1e1e1e/00ff99?text=Capa+Faltando'}" 
-                 alt="Capa do Beat: ${beat.nome}" class="beat-image"
-                 onerror="this.onerror=null; this.src='https://placehold.co/600x600/1e1e1e/00ff99?text=Capa+Faltando';">
-            <div class="beat-info">
-                <h3>${beat.nome}</h3>
-                <p>Categoria: ${beat.categoria || 'Não especificada'}</p>
-                <p class="price">${isFree ? 'GRÁTIS' : (beat.preco ? beat.preco.toFixed(2) + '€' : 'Preço Não Def.')}</p>
-                
-                <div class="controls-and-buy">
-                    <button class="play-button" data-beat-id="${beat.id}" data-url="${beat.preview_url}">
-                        <i class="fas fa-play"></i>
-                    </button>
-                    <a href="${link}" target="_blank" class="buy-button">
-                        ${buttonText}
-                    </a>
+        // Criar o HTML para este beat (o "card")
+        const beatCardHTML = `
+            <div class="beat-card" data-categoria="${beat.categoria}">
+                <img src="${beat.imagem_url}" alt="${beat.nome}">
+                <div class="beat-info">
+                    <h3>${beat.nome}</h3>
+                    <span class="categoria">${beat.categoria || 'Sem Categoria'}</span>
+                    
+                    <audio class="beat-player" controls controlsList="nodownload" src="${beat.preview_url}">
+                        Seu navegador não suporta áudio.
+                    </audio>
+                    
+                    <div class="beat-actions">
+                        <span class="views">👁️ ${beat.views || 0} views</span>
+                        ${acaoBotao}
+                    </div>
                 </div>
             </div>
         `;
 
-        // Adiciona o listener de clique ao botão de play/pause
-        const playButton = beatCard.querySelector('.play-button');
-        playButton.addEventListener('click', () => {
-            const beatId = playButton.getAttribute('data-beat-id');
-            const url = playButton.getAttribute('data-url');
-            playBeat(beatId, url, playButton);
-        });
+        // Adicionar o card à loja
+        lojaGrid.innerHTML += beatCardHTML;
 
-        container.appendChild(beatCard);
-    });
-}
-
-
-// Cria a lista de categorias para o filtro
-function populateCategories(beats) {
-    const filter = document.getElementById('category-filter');
-    const categories = new Set(beats.map(beat => beat.categoria).filter(c => c));
-    
-    categories.forEach(category => {
-        const option = document.createElement('option');
-        option.value = category;
-        option.textContent = category;
-        filter.appendChild(option);
-    });
-}
-
-
-// Função principal para carregar os dados
-async function loadBeats() {
-    try {
-        const { data: beats, error } = await supabaseClient
-            .from('beats')
-            .select('*');
-
-        if (error) {
-            console.error('Erro ao carregar beats:', error);
-            document.getElementById('beats-container').innerHTML = `<p class="error-message">Erro ao carregar dados: ${error.message}. Verifique o Supabase e RLS.</p>`;
-            return;
+        // Adicionar aos destaques (ex: se a categoria for "Destaque")
+        if (beat.categoria && beat.categoria.toLowerCase() === 'destaque') {
+            destaquesGrid.innerHTML += beatCardHTML;
         }
-
-        let allBeats = beats || [];
-        
-        // Armazena todos os beats carregados
-        window.allBeats = allBeats; 
-        
-        populateCategories(allBeats);
-        filterAndRender(allBeats);
-
-    } catch (e) {
-        console.error('Erro geral:', e);
-        document.getElementById('beats-container').innerHTML = `<p class="error-message">Erro de conexão: Verifique as chaves e a internet.</p>`;
-    }
-}
-
-
-// Função de filtro e pesquisa
-function filterAndRender(beats) {
-    const searchTerm = document.getElementById('search-input').value.toLowerCase();
-    const selectedCategory = document.getElementById('category-filter').value;
-    
-    const filteredBeats = beats.filter(beat => {
-        const matchesSearch = beat.nome.toLowerCase().includes(searchTerm) || 
-                              (beat.descricao && beat.descricao.toLowerCase().includes(searchTerm)) ||
-                              (beat.categoria && beat.categoria.toLowerCase().includes(searchTerm));
-        
-        const matchesCategory = selectedCategory === 'all' || beat.categoria === selectedCategory;
-
-        return matchesSearch && matchesCategory;
-    });
-
-    renderBeats(filteredBeats);
-}
-
-
-// ====================================================================
-// 4. FUNÇÕES DO FAQ (Acordeão)
-// ====================================================================
-
-function renderFAQ() {
-    const container = document.getElementById('faq-container');
-    // Mapeia o array de FAQS para o HTML
-    container.innerHTML = FAQS.map((item, index) => `
-        <div class="faq-item" id="faq-${index}">
-            <div class="faq-question">
-                <span>${item.question}</span>
-                <i class="fas fa-chevron-down"></i>
-            </div>
-            <div class="faq-answer">
-                <p>${item.answer}</p>
-            </div>
-        </div>
-    `).join('');
-
-    // Adiciona a lógica de abrir/fechar
-    document.querySelectorAll('.faq-question').forEach(question => {
-        question.addEventListener('click', () => {
-            const item = question.closest('.faq-item');
-            // Fecha todos os outros e abre o atual (comportamento Acordeão)
-            document.querySelectorAll('.faq-item').forEach(otherItem => {
-                if (otherItem !== item) {
-                    otherItem.classList.remove('active');
-                }
-            });
-            item.classList.toggle('active');
-        });
     });
 }
 
-
-// ====================================================================
-// 5. INICIALIZAÇÃO DA APLICAÇÃO
-// ====================================================================
-
-document.addEventListener('DOMContentLoaded', () => {
-    // 1. Inicia o carregamento dos beats
-    loadBeats();
+// Função para carregar as categorias no filtro <select>
+function carregarCategorias(beats) {
+    // Usar um Set para guardar apenas categorias únicas
+    const categorias = new Set(beats.map(beat => beat.categoria));
     
-    // 2. Adiciona listeners para filtragem
-    document.getElementById('search-input').addEventListener('input', () => filterAndRender(window.allBeats));
-    document.getElementById('category-filter').addEventListener('change', () => filterAndRender(window.allBeats));
+    categoriaSelect.innerHTML = '<option value="todos">Todas as Categorias</option>'; // Resetar
     
-    // 3. Inicia a rotação de fundos
-    if (BACKGROUND_IMAGES.length > 0) {
-        rotateBackgrounds();
+    categorias.forEach(categoria => {
+        if (categoria) { // Ignorar se a categoria estiver vazia
+            const option = document.createElement('option');
+            option.value = categoria;
+            option.textContent = categoria;
+            categoriaSelect.appendChild(option);
+        }
+    });
+}
+
+// Função para filtrar os beats quando o utilizador muda a categoria
+function filtrarBeats() {
+    const categoriaSelecionada = categoriaSelect.value;
+
+    if (categoriaSelecionada === 'todos') {
+        mostrarBeats(todosOsBeats); // Mostrar todos
+    } else {
+        const beatsFiltrados = todosOsBeats.filter(beat => beat.categoria === categoriaSelecionada);
+        mostrarBeats(beatsFiltrados); // Mostrar só os filtrados
     }
+}
 
-    // 4. Renderiza a secção FAQ
-    renderFAQ();
-});
+// --- "Ouvintes de Eventos" (O que faz o site funcionar) ---
+
+// 1. Quando o filtro <select> for alterado, chama a função filtrarBeats
+categoriaSelect.addEventListener('change', filtrarBeats);
+
+// 2. Quando a página carregar, chama a função principal
+document.addEventListener('DOMContentLoaded', carregarBeats);

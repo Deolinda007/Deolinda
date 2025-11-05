@@ -3,48 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pulha Echo Sound - Beats e Instrumentais</title>
+    <title>PulhaEchoSound - Loja de Beats</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Ícone de Play/Pause (FontAwesome) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-    <!-- Div para as imagens de fundo que se vão alternar -->
-    <div id="dynamic-background"></div> 
 
-    <div id="app" class="container">
-        <header class="header">
-            <h1>PULHA ECHO SOUND</h1>
-            <p>O melhor som para a sua próxima faixa. Beats e Instrumentais exclusivos.</p>
-        </header>
+    <header>
+        <h1>PulhaEchoSound Beats</h1>
+        <nav>
+            <a href="#destaques">Destaques</a>
+            <a href="#loja">Loja</a>
+            <a href="https://www.tiktok.com/@pulhaechosound" target="_blank">TikTok</a>
+        </nav>
+    </header>
 
-        <section class="search-and-filter">
-            <input type="text" id="search-input" placeholder="Pesquisar por nome ou categoria...">
-            <select id="category-filter">
-                <option value="all">Todas as Categorias</option>
-                <!-- As opções serão preenchidas por app.js -->
-            </select>
+    <main>
+        <section id="destaques">
+            <h2>🔥 Beats em Destaque</h2>
+            <div id="destaques-grid" class="grid-container">
+                </div>
         </section>
 
-        <section class="beats-grid" id="beats-container">
-            <!-- Beats serão injetados aqui pelo JavaScript -->
-            <p class="loading-message">A carregar beats... Se demorar, verifique a conexão do Supabase.</p>
-        </section>
-
-        <!-- NOVA SECÇÃO FAQ -->
-        <section class="faq-section">
-            <h2>Perguntas Frequentes (FAQ)</h2>
-            <div id="faq-container">
-                <!-- FAQ Items serão preenchidos por app.js -->
+        <section id="loja">
+            <h2>🎧 Loja de Beats</h2>
+            
+            <div class="filtros">
+                <label for="categoria-select">Filtrar por Categoria:</label>
+                <select id="categoria-select">
+                    <option value="todos">Todas as Categorias</option>
+                    </select>
             </div>
+            
+            <div id="loja-grid" class="grid-container">
+                </div>
         </section>
+    </main>
 
-        <footer>
-            <p>&copy; 2025 Pulha Echo Sound. Todos os direitos reservados.</p>
-        </footer>
-    </div>
+    <footer>
+        <p>&copy; 2024 PulhaEchoSound. Todos os direitos reservados.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"></script>
     <script src="app.js"></script>
 </body>
 </html>
