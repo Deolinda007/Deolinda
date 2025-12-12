@@ -1,166 +1,249 @@
-/* Reset Básico e Fontes */
-body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #121212;
-    color: #FFFFFF;
+/* style.css: Estilos da Marca Deolinda */
+
+/* --- Variáveis e Base --- */
+:root {
+    --cor-principal: #5d5d7e; /* Roxo/Azul Suave, Profissional */
+    --cor-secundaria: #A0D2EB; /* Azul Claro, Natural */
+    --cor-acento: #FFC0CB; /* Rosa Suave (Remete a salões, mas discreto) */
+    --cor-fundo: #FFFFFF;
+    --cor-texto: #333333;
+    --sombra-leve: 0 4px 10px rgba(0, 0, 0, 0.05);
 }
 
-/* Header */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #F8F8F8;
+    color: var(--cor-texto);
+    line-height: 1.6;
+}
+
+/* --- Layout Principal --- */
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
 header {
-    background-color: #1F1F1F;
-    padding: 20px 40px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #333;
+    background-color: var(--cor-principal);
+    color: var(--cor-fundo);
+    padding: 20px 0;
+    text-align: center;
+    box-shadow: var(--sombra-leve);
 }
 
 header h1 {
     margin: 0;
-    color: #1DB954; /* Cor tipo Spotify */
+    font-size: 2.5em;
+    font-weight: 300;
 }
 
-header nav a {
-    color: #B3B3B3;
-    text-decoration: none;
-    margin-left: 20px;
-    font-weight: 500;
+header p {
+    margin: 5px 0 0;
+    opacity: 0.9;
 }
 
-header nav a:hover {
-    color: #FFFFFF;
+section {
+    padding: 60px 0;
 }
 
-/* Conteúdo Principal */
-main {
-    padding: 40px;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-h2 {
-    color: #FFFFFF;
-    border-bottom: 2px solid #1DB954;
-    padding-bottom: 10px;
-    margin-bottom: 30px;
-}
-
-/* Filtros */
-.filtros {
-    margin-bottom: 20px;
-    background-color: #1F1F1F;
-    padding: 15px;
-    border-radius: 8px;
-}
-
-.filtros label {
-    margin-right: 10px;
-    font-weight: 500;
-}
-
-.filtros select {
-    padding: 8px 12px;
+/* --- Componentes --- */
+.botao {
+    display: inline-block;
+    background-color: var(--cor-acento);
+    color: var(--cor-texto);
+    padding: 12px 25px;
     border-radius: 5px;
-    border: none;
-    background-color: #333;
-    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s;
+    border: 2px solid var(--cor-acento);
 }
 
-/* Grid de Beats */
-.grid-container {
+.botao:hover {
+    background-color: var(--cor-principal);
+    color: var(--cor-fundo);
+    border-color: var(--cor-principal);
+}
+
+.titulo-seccao {
+    text-align: center;
+    font-size: 2em;
+    color: var(--cor-principal);
+    margin-bottom: 40px;
+}
+
+/* --- Seção História --- */
+#historia {
+    background-color: var(--cor-fundo);
+    border-bottom: 1px solid #eee;
+}
+
+.historia-conteudo {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+}
+
+.historia-texto {
+    flex: 1;
+}
+
+.historia-imagem {
+    flex: 0 0 300px; /* Largura fixa para a imagem */
+    border-radius: 10px;
+    box-shadow: var(--sombra-leve);
+    overflow: hidden;
+}
+
+.historia-imagem img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* --- Seção Demos e Galeria --- */
+#demos {
+    background-color: #f4f4f4;
+}
+
+.galeria-media {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 30px;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
 }
 
-/* Card Individual do Beat */
-.beat-card {
-    background-color: #1F1F1F;
+.media-item {
+    background-color: var(--cor-fundo);
     border-radius: 10px;
     overflow: hidden;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    transition: transform 0.2s ease;
+    box-shadow: var(--sombra-leve);
 }
 
-.beat-card:hover {
-    transform: translateY(-5px);
-}
-
-.beat-card img {
+.media-item img {
     width: 100%;
     height: 200px;
     object-fit: cover;
+    display: block;
 }
 
-.beat-info {
+.media-item iframe {
+    width: 100%;
+    height: 200px;
+    border: none;
+}
+
+.media-item-texto {
+    padding: 15px;
+    font-size: 0.9em;
+}
+
+/* --- Seção Comprar --- */
+#comprar {
+    text-align: center;
+    background-color: var(--cor-secundaria);
+    color: var(--cor-texto);
+    padding: 50px 0;
+}
+
+/* --- Footer e Redes Sociais --- */
+footer {
+    background-color: var(--cor-principal);
+    color: var(--cor-fundo);
+    padding: 40px 0;
+    text-align: center;
+}
+
+.redes-sociais a {
+    color: var(--cor-fundo);
+    font-size: 1.5em;
+    margin: 0 10px;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.redes-sociais a:hover {
+    color: var(--cor-acento);
+}
+
+/* --- Modo Editor (CMS Simplificado) --- */
+#editor-pin-toggler {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    width: 30px;
+    height: 30px;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 1000;
+    text-align: center;
+    line-height: 30px;
+    font-weight: bold;
+    color: white;
+}
+
+#editor-mode {
+    display: none; /* Escondido por padrão */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    z-index: 999;
+    overflow-y: scroll;
     padding: 20px;
 }
 
-.beat-info h3 {
-    margin-top: 0;
-    margin-bottom: 10px;
-    color: #FFFFFF;
+#editor-mode.active {
+    display: block;
 }
 
-.beat-info .categoria {
-    font-size: 0.85em;
-    color: #B3B3B3;
-    background-color: #333;
-    padding: 3px 8px;
-    border-radius: 5px;
-    display: inline-block;
-    margin-bottom: 15px;
-}
-
-.beat-player {
-    width: 100%;
-    margin-bottom: 15px;
-}
-
-/* Remove o botão de download do player de preview */
-.beat-player::-webkit-media-controls-enclosure {
-    overflow: hidden;
-}
-
-.beat-player::-webkit-media-controls-panel {
-    width: calc(100% + 30px); /* Esconde o botão de download */
-}
-
-
-.beat-actions {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.views {
-    font-size: 0.9em;
-    color: #B3B3B3;
-}
-
-.btn-comprar, .btn-download {
-    text-decoration: none;
-    color: #121212;
-    background-color: #1DB954;
-    padding: 10px 15px;
-    border-radius: 20px;
-    font-weight: bold;
-    text-align: center;
-    transition: background-color 0.2s;
-}
-
-.btn-comprar:hover, .btn-download:hover {
-    background-color: #1ED760;
-}
-
-/* Footer */
-footer {
-    text-align: center;
+.editor-painel {
+    background-color: var(--cor-fundo);
     padding: 30px;
-    background-color: #1F1F1F;
-    border-top: 1px solid #333;
-    margin-top: 50px;
-    color: #B3B3B3;
+    border-radius: 10px;
+    max-width: 800px;
+    margin: 50px auto;
+}
+
+.editor-painel h2 {
+    color: var(--cor-principal);
+    border-bottom: 2px solid var(--cor-acento);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.editor-painel label {
+    display: block;
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+.editor-painel input[type="text"],
+.editor-painel textarea {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.editor-painel button {
+    margin-top: 20px;
+    cursor: pointer;
+}
+
+/* --- Responsividade --- */
+@media (max-width: 768px) {
+    .historia-conteudo {
+        flex-direction: column;
+    }
+    .historia-imagem {
+        flex: none;
+        width: 100%;
+    }
 }

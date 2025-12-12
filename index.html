@@ -3,48 +3,141 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PulhaEchoSound - Loja de Beats</title>
+    <title id="site-title">Deolinda Software | Gestão Simples e Offline</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <header>
-        <h1>PulhaEchoSound Beats</h1>
-        <nav>
-            <a href="#destaques">Destaques</a>
-            <a href="#loja">Loja</a>
-            <a href="https://www.tiktok.com/@pulhaechosound" target="_blank">TikTok</a>
-        </nav>
+        <div class="container">
+            <h1 id="header-titulo">Deolinda Software</h1>
+            <p id="header-subtitulo">A Gestão que Simplifica. 100% Offline. Sem Mensalidades.</p>
+        </div>
     </header>
 
-    <main>
-        <section id="destaques">
-            <h2>🔥 Beats em Destaque</h2>
-            <div id="destaques-grid" class="grid-container">
+    <section id="historia">
+        <div class="container">
+            <h2 class="titulo-seccao">A Nossa História: Legado de Cuidado</h2>
+            <div class="historia-conteudo">
+                <div class="historia-texto">
+                    <p id="historia-paragrafo-1">
+                        A marca **Deolinda** é uma homenagem de amor, um pilar de valores e um compromisso de simplicidade. Deolinda era o nome da minha avó. O seu legado de respeito e simplicidade é o que nos guia.
+                    </p>
+                    <p id="historia-paragrafo-2">
+                        Hoje, honramos esse legado aplicando os mesmos princípios aos nossos programas de gestão: Genuíno, Confiável e **100% Offline**. Chega de subscrições, internet e complexidade desnecessária.
+                    </p>
                 </div>
-        </section>
-
-        <section id="loja">
-            <h2>🎧 Loja de Beats</h2>
-            
-            <div class="filtros">
-                <label for="categoria-select">Filtrar por Categoria:</label>
-                <select id="categoria-select">
-                    <option value="todos">Todas as Categorias</option>
-                    </select>
+                <div class="historia-imagem">
+                    <img id="historia-imagem-src" src="https://via.placeholder.com/300x400/A0D2EB/FFFFFF?text=Foto+Marca+Deolinda" alt="Imagem da Marca Deolinda">
+                </div>
             </div>
+        </div>
+    </section>
+
+    <section id="demos">
+        <div class="container">
+            <h2 class="titulo-seccao">Soluções Deolinda: Programas de Gestão Offline</h2>
+            <p id="catalogo-introducao" style="text-align: center; margin-bottom: 40px; color: var(--cor-texto);">
+                Escolha o programa que mais se adapta ao seu negócio. Todos são um investimento único.
+            </p>
             
-            <div id="loja-grid" class="grid-container">
+            <div class="catalogo-programas" id="program-list-container">
                 </div>
-        </section>
-    </main>
+
+            <p style="text-align: center; margin-top: 40px; font-style: italic;" id="texto-demos-cta">
+                <a id="cta-gumroad-link-1" href="https://deolinda.gumroad.com/" target="_blank" class="botao">
+                    Ver todos os programas e comprar agora
+                </a>
+            </p>
+        </div>
+    </section>
+
+    <section id="comprar">
+        <div class="container">
+            <h2 style="color: var(--cor-texto);" id="comprar-titulo">Pronto para a Gestão Sem Mensalidades?</h2>
+            <p id="comprar-texto">Simplifique a sua vida e o seu negócio hoje mesmo. Clique e garanta o seu software Deolinda.</p>
+            <a id="cta-gumroad-link-2" href="https://deolinda.gumroad.com/" target="_blank" class="botao">
+                COMPRAR AGORA NO GUMROAD
+            </a>
+        </div>
+    </section>
 
     <footer>
-        <p>&copy; 2024 PulhaEchoSound. Todos os direitos reservados.</p>
+        <div class="container">
+            <p>Siga-nos nas Redes Sociais e descubra as demonstrações:</p>
+            <div class="redes-sociais" id="social-links-container">
+                <a id="tiktok-link" href="https://tiktok.com/@seutiktok" target="_blank"><i class="fab fa-tiktok"></i> TikTok</a>
+                <a id="instagram-link" href="https://instagram.com/sua_conta" target="_blank"><i class="fab fa-instagram"></i> Instagram</a>
+            </div>
+            <p style="margin-top: 20px;">&copy; <span id="ano-atual">2023</span> Deolinda Software. Feito com cuidado. <a id="github-link-footer" href="https://github.com/Deolinda007" target="_blank">Código Fonte</a></p>
+        </div>
     </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
+    <div id="editor-pin-toggler" title="Entrar no Modo Editor">D</div>
+
+    <div id="editor-mode">
+        <div class="editor-painel">
+            <h2 id="editor-titulo-painel">Modo Editor (CMS Simplificado)</h2>
+
+            <div id="login-area">
+                <label for="editor-pin">Introduza o PIN de Acesso (Pin de Exemplo: 1234)</label>
+                <input type="text" id="editor-pin" placeholder="PIN Secreto">
+                <button onclick="app.initEditor()">Entrar</button>
+            </div>
+
+            <div id="editor-content-area" style="display: none;">
+                <h3>Configurações Globais</h3>
+                <label for="input-site-title">Título do Site:</label>
+                <input type="text" id="input-site-title">
+                <label for="input-header-titulo">Título Principal:</label>
+                <input type="text" id="input-header-titulo">
+                <label for="input-header-subtitulo">Subtítulo Principal:</label>
+                <input type="text" id="input-header-subtitulo">
+                
+                <label for="input-gumroad-link">Link do Gumroad (Catálogo Principal):</label>
+                <input type="text" id="input-gumroad-link" placeholder="Ex: https://deolinda.gumroad.com/">
+                
+                <label for="input-tiktok-link">Link do TikTok:</label>
+                <input type="text" id="input-tiktok-link">
+                <label for="input-instagram-link">Link do Instagram:</label>
+                <input type="text" id="input-instagram-link">
+                <label for="input-github-link">Link do GitHub (Rodapé):</label>
+                <input type="text" id="input-github-link">
+
+
+                <h3>História da Marca</h3>
+                <label for="input-historia-imagem-src">Link da Imagem da Marca (URL):</label>
+                <input type="text" id="input-historia-imagem-src">
+                <label for="input-historia-paragrafo-1">Parágrafo 1 da História:</label>
+                <textarea id="input-historia-paragrafo-1"></textarea>
+                <label for="input-historia-paragrafo-2">Parágrafo 2 da História:</label>
+                <textarea id="input-historia-paragrafo-2"></textarea>
+
+                <h3>Programas de Gestão (Catálogo)</h3>
+                <p>Aqui gere os cartões de descrição dos seus softwares. Todos apontam para o seu link do Gumroad.</p>
+                
+                <div id="program-list-container-editor">
+                    </div>
+
+                <button onclick="app.addProgramItem()" style="background-color: var(--cor-secundaria); border-color: var(--cor-secundaria);">+ Adicionar Novo Programa/Solução</button>
+
+                <button onclick="app.saveContent()" style="margin-top: 30px;">GUARDAR e ATUALIZAR SITE</button>
+                <button onclick="app.logoutEditor()" style="background-color: #dc3545; color: white; border: none;">Sair do Editor</button>
+            </div>
+        </div>
+    </div>
+    
+    <template id="program-item-template">
+        <div class="editor-program-item" style="border: 1px solid #ccc; padding: 15px; margin-bottom: 10px; border-radius: 5px;">
+            <label>Título do Programa:</label>
+            <input type="text" class="program-title" placeholder="Ex: Deolinda Agenda Salão">
+            <label>Descrição Curta:</label>
+            <textarea class="program-desc" rows="3" placeholder="Ex: A forma mais simples de gerir reservas, clientes e faturas."></textarea>
+            <button onclick="app.removeProgramItem(this)" style="background-color: #f0ad4e; color: white; border: none; margin-top: 10px;">Remover Este Programa</button>
+        </div>
+    </template>
+
     <script src="app.js"></script>
 </body>
 </html>
